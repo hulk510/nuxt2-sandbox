@@ -39,7 +39,9 @@ test("render 2", () => {
 
 test("render 3 v-if", async () => {
   const wrapper = mount({
-    data: { isVisible: true },
+    data: () => ({
+      isVisible: true,
+    }),
     template: `
       <div>
         <p v-if="isVisible">Now you see me</p>
@@ -55,4 +57,34 @@ test("render 3 v-if", async () => {
   //   expect(wrapper.text()).toBe("Now you don't");
   // });
   expect(wrapper.text()).toBe("Now you don't");
+});
+
+test("coputed property", async () => {
+  const wrapper = mount({
+    data: () => ({
+      firstName: "John",
+      lastName: "Doe",
+    }),
+    computed: {
+      fullName() {
+        return this.firstName + " " + this.lastName;
+      },
+    },
+    template: "<div>{{ fullName }}</div>",
+  });
+  expect(wrapper.text()).toBe("John Doe");
+  await wrapper.setData({ firstName: "Jane" });
+  expect(wrapper.text()).toBe("Jane Doe");
+});
+
+test("v-bind", async () => {
+  const wrapper = mount({
+    data() {
+      return {
+        isActive: true,
+      };
+    },
+    template: `<div class="disabled" :class="{ active: isActive }">Content</div>`,
+  });
+  expect(wrapper.html()).toBe('<div class="disabled active">Content</div>');
 });
