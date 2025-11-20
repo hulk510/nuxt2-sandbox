@@ -88,3 +88,23 @@ test("v-bind", async () => {
   });
   expect(wrapper.html()).toBe('<div class="disabled active">Content</div>');
 });
+
+test("v-on", async () => {
+  const wrapper = mount({
+    template: `
+      <button @click="increment">{{ count }}</button>
+    `,
+    data() {
+      return { count: 0 };
+    },
+    methods: {
+      increment() {
+        this.count += 1;
+      },
+    },
+  });
+
+  expect(wrapper.text()).toBe("0");
+  await wrapper.find("button").trigger("click");
+  expect(wrapper.text()).toBe("1");
+});
